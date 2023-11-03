@@ -48,9 +48,8 @@ def train(model_dict, modelname='lgb', i=0, model_path= '/kaggle/input/optiverba
         
         model.fit( 
                     X[index%N_fold!=i], Y[index%N_fold!=i], # 用这种算法实现5折交叉验证，很巧妙
-                    eval_set=[(X[index%N_fold==i], Y[index%N_fold==i])], 
-                    verbose=50, # 每10个迭代输出一次log
-            
+                    eval_set=[(X[index%N_fold==i], Y[index%N_fold==i])],
+                    verbose=50, # 每50个迭代输出一次log
                     # 在连续100个迭代内如果loss不再改善，就会停止 
                     early_stopping_rounds=100
         )
