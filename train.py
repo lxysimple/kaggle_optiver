@@ -49,9 +49,9 @@ def train(model_dict, modelname='lgb', i=0, model_path= '/kaggle/input/optiverba
         model.fit( 
                     X[index%N_fold!=i], Y[index%N_fold!=i], # 用这种算法实现5折交叉验证，很巧妙
                     eval_set=[(X[index%N_fold==i], Y[index%N_fold==i])],
-                    verbose=50, # 每50个迭代输出一次log
+                    # verbose=50, # 每50个迭代输出一次log
                     # 在连续100个迭代内如果loss不再改善，就会停止 
-                    early_stopping_rounds=100
+                    # early_stopping_rounds=100
         )
         # 将该折模型保存到内存和磁盘，太占内存了，训练结束后取消训练模式再取模型吧
 #         models.append(model)
