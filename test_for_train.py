@@ -51,7 +51,7 @@ def train(model_dict, modelname='lgb', i=0, model_path= '/kaggle/input/optiverba
                     eval_set=[(X[index%N_fold==i], Y[index%N_fold==i])],
                     # verbose=50, # 每50个迭代输出一次log 服务器支持GPU加速的模型没有这个参数
                     # 在连续100个迭代内如果loss不再改善，就会停止 
-                    early_stopping_rounds=100
+                    # early_stopping_rounds=100 #服务器版本也没有早停参数
         )
         # 将该折模型保存到内存和磁盘，太占内存了，训练结束后取消训练模式再取模型吧
 #         models.append(model)
