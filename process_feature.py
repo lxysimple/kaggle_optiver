@@ -9,8 +9,6 @@ from tqdm import tqdm
 
 df = pl.read_csv("train_end.csv")
 
-df = df[0:1000]
-
 
 NUMS = [ 'imbalance_size',
        'imbalance_buy_sell_flag', 'reference_price', 'matched_size',
