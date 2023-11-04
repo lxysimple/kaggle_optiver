@@ -67,7 +67,7 @@ train = pl.concat(train)
 train = train.to_pandas()
 train.dropna(subset=['target'], inplace=True)
 
-train.write_csv('process_mid.csv')
+train.to_csv('process_mid.csv')
 
 
 # # some cleaning...
