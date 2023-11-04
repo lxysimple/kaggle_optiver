@@ -12,7 +12,7 @@ TRAINING = True
 # TRAINING = False # 这个时候只用数据增强函数+15个模型，进行推理
 
 
-df_train = pd.read_csv('test_for_train.py')
+df_train = pd.read_csv('train.csv')
 
 if TRAINING:
     # 上传到kaggle dataset上的压缩文件会自动解压，厉害！ 
@@ -30,7 +30,7 @@ N_fold = 5
 if TRAINING:
 
     Y = df_train['target'].values
-    X = df_.drop(columns='target')
+    X = df_train.drop(columns='target').values
 
     # 去除标签是NAN的行
     X = X[np.isfinite(Y)]
