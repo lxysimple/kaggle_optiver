@@ -72,12 +72,13 @@ drop = list(null[null>0.9].index)
 for col in train.columns:
     if train[col].nunique()==1:
         drop.append(col)
-FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
+
+# FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
+FEATURES = [c for c in train.columns if c not in drop + ['date_id']] # 注意这里将target放入了
 
 len(FEATURES)
 
-train.to_csv('process_mid.csv')
-
+train['FEATURES'].to_csv('FEATURES_train.csv')
 
 # # some cleaning...
 # null = train.isnull().sum().sort_values(ascending=False) / len(train)
