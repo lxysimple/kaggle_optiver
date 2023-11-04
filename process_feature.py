@@ -83,4 +83,6 @@ FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']]
 
 print(len(FEATURES))
 
+FEATURES = FEATURES.to_pandas()
+
 FEATURES.write_csv('FEATURES.csv')
