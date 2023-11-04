@@ -9,6 +9,9 @@ from tqdm import tqdm
 
 df = pl.read_csv("train_end.csv")
 
+df = df[0:1000]
+
+
 NUMS = [ 'imbalance_size',
        'imbalance_buy_sell_flag', 'reference_price', 'matched_size',
        'far_price', 'near_price', 'bid_price', 'bid_size', 'ask_price',
@@ -56,17 +59,11 @@ def feature_engineer_for_index(x, date, time):
     return df
 
 
-# train = []
-# for date in tqdm(range(481)):
-#     for t in range(0, 550, 10):
-#         train.append(feature_engineer_for_index(df, date, t))
-
-
-# 小数据集测试
 train = []
 for date in tqdm(range(481)):
     for t in range(0, 550, 10):
-        train.append(feature_engineer_for_index(df, date, t))   
+        train.append(feature_engineer_for_index(df, date, t))
+  
 
 train = pl.concat(train)
 train = train.to_pandas()
