@@ -7,6 +7,8 @@ import polars as pl
 from tqdm import tqdm
 
 
+df = pl.read_csv("train_end.csv")
+
 NUMS = [ 'imbalance_size',
        'imbalance_buy_sell_flag', 'reference_price', 'matched_size',
        'far_price', 'near_price', 'bid_price', 'bid_size', 'ask_price',
@@ -53,7 +55,7 @@ def feature_engineer_for_index(x, date, time):
     
     return df
 
-df = pl.read_csv("train_end.csv")
+
 
 train = []
 for date in tqdm(range(5)):
