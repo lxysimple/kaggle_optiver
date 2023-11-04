@@ -12,7 +12,7 @@ TRAINING = True
 # TRAINING = False # 这个时候只用数据增强函数+15个模型，进行推理
 
 
-df_train = pd.read_csv('train.csv')
+df_train = pd.read_csv('test_for_train.py')
 
 if TRAINING:
     # 上传到kaggle dataset上的压缩文件会自动解压，厉害！ 
