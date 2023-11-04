@@ -11,9 +11,6 @@ import copy
 TRAINING = True
 # TRAINING = False # 这个时候只用数据增强函数+15个模型，进行推理
 
-
-df_train = pd.read_csv('train.csv')
-
 if TRAINING:
     # 上传到kaggle dataset上的压缩文件会自动解压，厉害！ 
     df_ = pd.read_csv('train_end.csv')
@@ -28,8 +25,8 @@ if not os.path.exists(directory):
 N_fold = 5 
 
 if TRAINING:
-    X = df_.values
-    Y = df_train['target'].values
+    Y = df_['target'].values
+    X = df_.drop(columns='target')
 
     # 去除标签是NAN的行
     X = X[np.isfinite(Y)]
@@ -49,9 +46,9 @@ def train(model_dict, modelname='lgb', i=0, model_path= '/kaggle/input/optiverba
         model.fit( 
                     X[index%N_fold!=i], Y[index%N_fold!=i], # 用这种算法实现5折交叉验证，很巧妙
                     eval_set=[(X[index%N_fold==i], Y[index%N_fold==i])],
-                    # verbose=50, # 每50个迭代输出一次log
+                    verbose=50, # 每50个迭代输出一次log
                     # 在连续100个迭代内如果loss不再改善，就会停止 
-                    # early_stopping_rounds=100
+                    early_stopping_rounds=100
         )
         # 将该折模型保存到内存和磁盘，太占内存了，训练结束后取消训练模式再取模型吧
 #         models.append(model)
@@ -67,7 +64,11 @@ def train(model_dict, modelname='lgb', i=0, model_path= '/kaggle/input/optiverba
 
 model_dict = {
     # L1损失函数、500棵树=迭代500次（每次迭代就是基于train数据构建一棵树然后拟合残差）
-    'lgb': lgb.LGBMRegressor(objective='regression_l1', n_estimators=500, device= 'gpu'),
+    'lgb': lgb.LGBMRegressor(
+        objective='regression_l1', 
+        n_estimators=500, device= 'gpu',
+        gpu_device_id = 1
+    ),
     # 使用基于直方图的方法来构建决策树、L1损失、500棵树
     'xgb': xgb.XGBRegressor(
         booster = 'gbtree',

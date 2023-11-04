@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_absolute_error
 import polars as pl
-# from xgboost import XGBRegressor
-# from lightgbm import LGBMRegressor
 from tqdm import tqdm
 
 
@@ -30,28 +28,14 @@ for i,a in enumerate(prices):
             columns.append( (((pl.col(a) - pl.col(b))/(pl.col(a)+pl.col(b)) ).alias(f'{a}_{b}_imb')) )
             columns.append( (((pl.col(a) - pl.col(b)) ).alias(f'{a}_{b}_imb_minus')) )
             
-columns_part2 = [
-    
-    
-    #**[pl.col("imbalance_size").shift(i).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias(f"imbalance_size_{i}") for i in range(1, 6)],
-    
-    
-#     (( pl.col("imbalance_size").shift(1)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_0")),
-#     (( pl.col("imbalance_size").shift(2)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_1")),
-#     (( pl.col("imbalance_size").shift(3)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_2")),
-#     (( pl.col("imbalance_size").shift(4)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_3")),
-#     (( pl.col("imbalance_size").shift(5)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_4")),
-#     (( pl.col("imbalance_size").shift(6)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_5")),
-    
-    
+columns_part2 = [ 
     ((pl.col("imbalance_size") - pl.col("imbalance_size").shift(1)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_diff_0")),
     ((pl.col("imbalance_size") - pl.col("imbalance_size").shift(2)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_diff_1")),
     ((pl.col("imbalance_size") - pl.col("imbalance_size").shift(3)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_diff_2")),
     ((pl.col("imbalance_size") - pl.col("imbalance_size").shift(4)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_diff_3")),
     ((pl.col("imbalance_size") - pl.col("imbalance_size").shift(5)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_diff_4")),
     ((pl.col("imbalance_size") - pl.col("imbalance_size").shift(6)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("imbalance_size_diff_5")),
-    
-    
+
     ((pl.col("matched_size") - pl.col("matched_size").shift(1)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("matched_size_diff_0")),
     ((pl.col("matched_size") - pl.col("matched_size").shift(2)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("matched_size_diff_1")),
     ((pl.col("matched_size") - pl.col("matched_size").shift(3)).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias("matched_size_diff_2")),
@@ -100,15 +84,6 @@ day = 1
 year = (365.2425)*day
 
 columns_part3 = [
-
-    # ( np.sin((pl.col("date_id") + 1) * (2 * np.pi / day)).alias("day_sin") ),
-    # ( np.cos((pl.col("date_id") + 1) * (2 * np.pi / day)).alias("day_cos") ),
-#     ( np.sin((pl.col("date_id") + 1) * (2 * np.pi / year)).alias("year_sin") ),
-#     ( np.cos((pl.col("date_id") + 1) * (2 * np.pi / year)).alias("year_cos") ),
-    
-#     ( np.sin((pl.col("seconds_in_bucket")) * (2 * np.pi / mins)).alias("min_sin") ),
-#     ( np.cos((pl.col("seconds_in_bucket") ) * (2 * np.pi / mins)).alias("min_cos") ),
-    
     ( np.sin((pl.col("seconds_in_bucket")) * (2 * np.pi / 1)).alias("second_sin") ),
     ( np.cos((pl.col("seconds_in_bucket") ) * (2 * np.pi / 1)).alias("second_cos") ),
 ]
@@ -117,14 +92,10 @@ columns_part4 = []
 for num in NUMS:
     for gap in gaps:
         columns_part4.append(
-            
-        pl.col(num).shift(gap).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias(f"{num}_gap_{gap}")
-        
+            pl.col(num).shift(gap).fill_null(0).clip(-1e9, 1e9).over(["stock_id", "date_id"]).alias(f"{num}_gap_{gap}")
         )
 
 columns += columns_part2 + columns_part4 + columns_part3
-
-
 
 df = (pl.read_csv("train.csv") # 缩小数据量看能不能跑通
       .with_columns(columns_convert)
@@ -142,7 +113,6 @@ NUMS += [i for i in df.columns if i not in ['stock_id', 'date_id', 'seconds_in_b
 
 eps = 1e-3
 def feature_engineer_for_index(x, date, time):
-    #x = x.filter(((pl.col('seconds_in_bucket') <= time) & (pl.col('date_id') == date)) | (pl.col('date_id') < date) )
     x = x.filter(((pl.col('seconds_in_bucket') <= time) & (pl.col('date_id') == date)) )
     feature_suffix = 'part_1'
     aggs = [
@@ -171,10 +141,6 @@ def feature_engineer_for_index(x, date, time):
     
     x = x.filter((pl.col('seconds_in_bucket') == time) & (pl.col('date_id') == date))
     df = x.join(features_part_1, on='stock_id')
-    # df = df.join(features_part_2, on=['stock_id', 'seconds_in_bucket'])
-    # df = df.join(features_part_3, on=['seconds_in_bucket'])
-    #df = df.filter((pl.col('seconds_in_bucket') == time) & (pl.col('date_id') == date))
-    #df = df.to_pandas()
     
     return df
 
