@@ -67,22 +67,18 @@ train = pl.concat(train)
 train = train.to_pandas()
 train.dropna(subset=['target'], inplace=True)
 
-# some cleaning...
-null = train.isnull().sum().sort_values(ascending=False) / len(train)
+train.write_csv('process_mid.csv')
 
 
-drop = list(null[null>0.9].index)
+# # some cleaning...
+# null = train.isnull().sum().sort_values(ascending=False) / len(train)
+# drop = list(null[null>0.9].index)
+# for col in train.columns:
+#     if train[col].nunique()==1:
+#         drop.append(col)
+# print("*********df DONE*********")
+# FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
+# print(len(FEATURES))
 
 
-for col in train.columns:
-    if train[col].nunique()==1:
-        drop.append(col)
-print("*********df DONE*********")
 
-FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
-
-print(len(FEATURES))
-
-FEATURES = FEATURES.to_pandas()
-
-FEATURES.write_csv('FEATURES.csv')
