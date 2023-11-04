@@ -56,29 +56,23 @@ def feature_engineer_for_index(x, date, time):
     return df
 
 
+# train = []
+# for date in tqdm(range(481)):
+#     for t in range(0, 550, 10):
+#         train.append(feature_engineer_for_index(df, date, t))
+
+
+# 小数据集测试
 train = []
 for date in tqdm(range(481)):
     for t in range(0, 550, 10):
-        train.append(feature_engineer_for_index(df, date, t))
+        train.append(feature_engineer_for_index(df, date, t))   
 
 train = pl.concat(train)
 train = train.to_pandas()
 train.dropna(subset=['target'], inplace=True)
 
-
-# some cleaning...
-null = train.isnull().sum().sort_values(ascending=False) / len(train)
-drop = list(null[null>0.9].index)
-for col in train.columns:
-    if train[col].nunique()==1:
-        drop.append(col)
-
-# FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
-FEATURES = [c for c in train.columns if c not in drop + ['date_id']] # 注意这里将target放入了
-
-len(FEATURES)
-
-train['FEATURES'].to_csv('FEATURES_train.csv')
+print(train.shape)
 
 # # some cleaning...
 # null = train.isnull().sum().sort_values(ascending=False) / len(train)
@@ -86,9 +80,15 @@ train['FEATURES'].to_csv('FEATURES_train.csv')
 # for col in train.columns:
 #     if train[col].nunique()==1:
 #         drop.append(col)
-# print("*********df DONE*********")
-# FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
-# print(len(FEATURES))
+
+# # FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
+# FEATURES = [c for c in train.columns if c not in drop + ['date_id']] # 注意这里将target放入了
+
+# len(FEATURES)
+
+train.to_csv('FEATURES_train.csv')
+
+
 
 
 
