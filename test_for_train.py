@@ -28,8 +28,9 @@ if not os.path.exists(directory):
 N_fold = 5 
 
 if TRAINING:
-    X = df_.values
+
     Y = df_train['target'].values
+    X = df_.drop(columns='target')
 
     # 去除标签是NAN的行
     X = X[np.isfinite(Y)]
