@@ -66,8 +66,9 @@ model_dict = {
     # L1损失函数、500棵树=迭代500次（每次迭代就是基于train数据构建一棵树然后拟合残差）
     'lgb': lgb.LGBMRegressor(
         objective='regression_l1', 
-        n_estimators=500, device= 'gpu',
-        gpu_device_id = 1
+        n_estimators=500, 
+        # device= 'gpu',
+        # gpu_device_id = 1
     ),
     # 使用基于直方图的方法来构建决策树、L1损失、500棵树
     'xgb': xgb.XGBRegressor(
