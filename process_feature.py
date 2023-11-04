@@ -56,16 +56,25 @@ def feature_engineer_for_index(x, date, time):
     return df
 
 
-
 train = []
-for date in tqdm(range(5)):
-    for t in range(0, 5, 10):
+for date in tqdm(range(481)):
+    for t in range(0, 550, 10):
         train.append(feature_engineer_for_index(df, date, t))
-
 
 train = pl.concat(train)
 train = train.to_pandas()
 train.dropna(subset=['target'], inplace=True)
+
+
+# some cleaning...
+null = train.isnull().sum().sort_values(ascending=False) / len(train)
+drop = list(null[null>0.9].index)
+for col in train.columns:
+    if train[col].nunique()==1:
+        drop.append(col)
+FEATURES = [c for c in train.columns if c not in drop + ['target', 'date_id']] 
+
+len(FEATURES)
 
 train.to_csv('process_mid.csv')
 
