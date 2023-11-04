@@ -71,8 +71,8 @@ model_dict = {
     'lgb': lgb.LGBMRegressor(
         objective='regression_l1', 
         n_estimators=500, 
-        device= 'gpu',
-        gpu_device_id = 1
+        # device= 'gpu',
+        # gpu_device_id = 1
     ),
     # 使用基于直方图的方法来构建决策树、L1损失、500棵树
     'xgb': xgb.XGBRegressor(
