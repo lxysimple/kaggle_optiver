@@ -67,7 +67,7 @@ train = pl.concat(train)
 train = train.to_pandas()
 train.dropna(subset=['target'], inplace=True)
 
-print(train.shape())
+print(train.shape)
 
 # # some cleaning...
 # null = train.isnull().sum().sort_values(ascending=False) / len(train)
