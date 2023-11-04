@@ -26,7 +26,7 @@ N_fold = 5
 
 if TRAINING:
     Y = df_['target'].values
-    X = df_.drop(columns='target')
+    X = df_.drop(columns='target').values
 
     # 去除标签是NAN的行
     X = X[np.isfinite(Y)]
